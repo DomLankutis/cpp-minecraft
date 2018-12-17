@@ -14,5 +14,5 @@ find_package(OpenGL REQUIRED)
 add_library(glad "./lib/glad/src/glad.c")
 link_libraries(dl)
 
-add_executable(${PROJECT_NAME} ${cpp_minecraft_SOURCES} ${cpp_minecract_HEADERS} src/Mesh.cpp src/Mesh.hpp)
+add_executable(${PROJECT_NAME} ${cpp_minecraft_SOURCES} ${cpp_minecract_HEADERS})
 target_link_libraries(cpp_minecraft sfml-window glad GL)

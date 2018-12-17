@@ -1,13 +1,17 @@
 #include "Mesh.hpp"
 
-Mesh::Mesh(std::vector<float> vertex, std::vector<float>texture) {
+Mesh::Mesh(std::vector<float> vertex, std::vector<float> texture, std::vector<unsigned int> ebo) {
     genVAO();
 
     _vertexPos = std::move(vertex);
     _texturePos = std::move(texture);
+    _graphicsInfo.indicesCount = ebo.size();
 
     addVBO(3, _vertexPos);
-    addVBO(3, _texturePos);
+    addVBO(2, _texturePos);
+    genEBO(ebo);
+
+
 }
 
 void Mesh::addVBO(int size, std::vector<float> data) {
@@ -29,11 +33,19 @@ void Mesh::genVAO() {
     glBindVertexArray(_graphicsInfo.VAO);
 }
 
+void Mesh::genEBO(std::vector<unsigned int> ebo) {
+    unsigned int EBO;
+    glGenBuffers(1, &EBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, ebo.size() * sizeof(unsigned int), ebo.data(), GL_STATIC_DRAW);
+}
+
 void Mesh::use() {
     glBindVertexArray(_graphicsInfo.VAO);
 }
 
-void Mesh::draw(GLenum mode, int start) {
+void Mesh::draw(GLenum mode) {
     use();
-    glDrawArrays(mode, 0, (GLsizei)_vertexPos.size());
+    glDrawElements(mode, _graphicsInfo.indicesCount, GL_UNSIGNED_INT, nullptr);
+    glBindVertexArray(0);
 }

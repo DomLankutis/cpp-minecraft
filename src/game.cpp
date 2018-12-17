@@ -4,6 +4,7 @@ sf::Window Game::_window;
 sf::Event Game::_event;
 
 Shader Game::_shader;
+Texture Game::_textureAtlas;
 
 
 Game::Game() {
@@ -21,6 +22,7 @@ Game::Game() {
     glViewport(0, 0, _window.getSize().x, _window.getSize().y);
 
     _shader = Shader{"./Graphics/shaders/vShader.glsl", "./Graphics/shaders/fShader.glsl"};
+    _textureAtlas = Texture{"./Graphics/textures/textureAtlas.jpg"};
 
     _running = true;
 }
@@ -32,18 +34,25 @@ void Game::Start() {
 void Game::Run() {
 
     std::vector<float> pos {
-            -0.5f, -0.5f, 0.0f,
-            0.5f, -0.5f, 0.0f,
-            0.0f,  0.5f, 0.0f,
+        0.5, 0.5, 0,
+        0.5, -0.5, 0,
+        -0.5, -0.5, 0,
+        -0.5, 0.5, 0
     };
 
-    std::vector<float> col {
-        1, 0, 0,
-        0, 1, 0,
-        0, 0, 1,
+    std::vector<float> textPos {
+        .249, 1,
+        .249, 1 - .249,
+        0, 1 - .249,
+        0, 1
     };
 
-    Mesh triangle {pos, col};
+    std::vector<unsigned int> posIndices = {
+            0, 1, 3,
+            1, 2, 3
+    };
+
+    Mesh triangle {pos, textPos, posIndices};
 
     while (_running) {
 
@@ -54,6 +63,7 @@ void Game::Run() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         _shader.use();
+        _textureAtlas.use();
         triangle.draw(GL_TRIANGLES);
 
         _window.display();

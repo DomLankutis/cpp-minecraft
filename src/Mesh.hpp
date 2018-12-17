@@ -1,7 +1,3 @@
-//
-// Created by dom on 16/12/18.
-//
-
 #ifndef CPP_MINECRAFT_MESH_H
 #define CPP_MINECRAFT_MESH_H
 
@@ -11,6 +7,7 @@
 class Mesh {
 private:
     std::vector<float> _vertexPos;
+    std::vector<unsigned int> _indices;
     std::vector<float> _texturePos;
     GraphicsInfo _graphicsInfo;
 
@@ -21,13 +18,14 @@ private:
 
 public:
     Mesh() = default;
-    Mesh(std::vector<float>, std::vector<float>);
+    Mesh(std::vector<float>,std::vector<float>, std::vector<unsigned int>);
     ~Mesh() = default;
 
 public:
-    void addVBO(int, std::vector<float>);
     void genVAO();
-    void draw(GLenum, int = 0);
+    void genEBO(std::vector<unsigned int>);
+    void addVBO(int, std::vector<float>);
+    void draw(GLenum);
 
 };
 

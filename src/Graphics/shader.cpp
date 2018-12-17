@@ -65,8 +65,3 @@ Shader::Shader (const GLchar *vertexPath, const GLchar *fragmentPath) {
 void Shader::use() {
     glUseProgram(ID);
 }
-
-//template <typename T>
-//void Shader::set(const std::string &name, T value) const {
-//    Error(std::type_info(value).name());
-//}
