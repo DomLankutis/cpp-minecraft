@@ -2,24 +2,32 @@
 
 #include "./Graphics/shader.hpp"
 #include "./Graphics/Texture.hpp"
+#include "Camera.hpp"
 #include "Mesh.hpp"
 
 class Game {
 private:
-    static sf::Window _window;
-    static sf::Event _event;
+    sf::Window _window;
+    sf::Clock _deltaClock;
+    sf::Time _dt;
 
-    static Texture _textureAtlas;
-    static Shader _shader;
+    Texture _textureAtlas;
+    Shader _shader;
 
-    bool _running;
+    glm::vec2 _mousePos;
+    glm::vec2 _lastMousePos;
+
+    Camera _worldCamera;
+
 
 private:
-    void Run();
+    void run();
+    void updateMouse();
+    glm::vec2 getMouseOffset();
 
 public:
     Game();
-    ~Game() = default;
 
-    void Start();
+public:
+    void start();
 };

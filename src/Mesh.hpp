@@ -17,9 +17,7 @@ private:
     void use();
 
 public:
-    Mesh() = default;
     Mesh(std::vector<float>,std::vector<float>, std::vector<unsigned int>);
-    ~Mesh() = default;
 
 public:
     void genVAO();
