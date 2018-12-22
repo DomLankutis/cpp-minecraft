@@ -46,58 +46,8 @@ glm::vec2 Game::getMouseOffset() {
 
 void Game::run() {
 
-    std::vector<float> pos {
-            -0.5, 0.5, 0.5,     // Front Top Left
-            0.5,  0.5, 0.5,     // Front Top Right
-            0.5, -0.5, 0.5,     // Front Bottom Right
-            -0.5,-0.5, 0.5,     // Front Bottom Left
-
-            -0.5, 0.5,-0.5,     // Back Top Left
-            0.5,  0.5,-0.5,     // Back Top Right
-            0.5, -0.5,-0.5,     // Back Bottom Right
-            -0.5,-0.5,-0.5      // Back Bottom Left
-    };
-
-    float m = 0.25f;
-
-    std::vector<float> textPos {
-        0, 1,
-        m, 1,
-        m, 1 - m,
-        0, 1 - m,
-        0, 1,
-        m, 1,
-        m, 1 - m,
-        0, 1 - m,
-    };
-
-
-    std::vector<unsigned int> posIndices = {
-            0,3,2,  //Front
-            2,1,0,
-
-            1,5,6,	//Right
-            6,2,1,
-
-            5,4,7,	//Left
-            7,6,5,
-
-            4,7,3,	//Back
-            3,0,4,
-
-            4,5,1,	//Top
-            1,0,4,
-
-            3,2,6,	//Bottom
-            6,7,3,
-    };
-
-    Mesh triangle {pos, textPos, posIndices};
-
-    glm::mat4 model = glm::mat4(1);
-    model = glm::translate(model, glm::vec3(0, 0, -2));
-    model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
-    model = glm::rotate(model, glm::radians(50.0f), glm::vec3(0, 1, 1));
+    Chunk testChunk {};
+    testChunk.createMesh();
 
     while (_window.isOpen()) {
 
@@ -117,11 +67,13 @@ void Game::run() {
         _textureAtlas.use();
 
         _shader.use();
-        _shader.set("MVP", _worldCamera.getView() * model);
+        _shader.set("MVP", _worldCamera.getView());
 
-        triangle.draw(GL_TRIANGLES);
+        testChunk.render(GL_TRIANGLES);
         _window.display();
 
+        _fps.update();
+        _window.setTitle(std::to_string(_fps.getFPS()));
         _dt = _deltaClock.restart();
     }
 }
