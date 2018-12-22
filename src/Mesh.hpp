@@ -4,27 +4,31 @@
 #include "includes.hpp"
 #include "./Graphics/GraphicsInfo.hpp"
 
+struct Vertex {
+    std::vector<GLfloat> vertices;
+    std::vector<GLfloat> normals;
+    std::vector<GLfloat> colors;
+    std::vector<GLfloat> texCoords;
+    std::vector<GLuint> indices;
+};
+
 class Mesh {
 private:
-    std::vector<float> _vertexPos;
-    std::vector<unsigned int> _indices;
-    std::vector<float> _texturePos;
-    GraphicsInfo _graphicsInfo;
+    GLuint _vao;
+    GLuint _ebo;
+    std::vector<GLuint> _vbos;
 
-    std::vector<unsigned int> _vbos;
+    unsigned int _indecieCount;
 
 private:
-    void use();
+    void addVBO(int size, std::vector<GLfloat> data);
 
 public:
-    Mesh(std::vector<float>,std::vector<float>, std::vector<unsigned int>);
+    Mesh(Vertex vertexInfo);
+    ~Mesh();
 
 public:
-    void genVAO();
-    void genEBO(std::vector<unsigned int>);
-    void addVBO(int, std::vector<float>);
     void draw(GLenum);
-
 };
 
 
