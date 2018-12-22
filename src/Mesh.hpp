@@ -2,7 +2,6 @@
 #define CPP_MINECRAFT_MESH_H
 
 #include "includes.hpp"
-#include "./Graphics/GraphicsInfo.hpp"
 
 struct Vertex {
     std::vector<GLfloat> vertices;
