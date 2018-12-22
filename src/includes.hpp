@@ -14,5 +14,11 @@
 
 #include <SFML/Window.hpp>
 
-#define Error(x) std::cout << "ERROR: " << x << std::endl
+#define Error(x) std::cerr << "ERROR: " << x << std::endl
 #define Log(x) std::cout << "LOG: " << x << std::endl
+
+enum BlockType {
+    BlockType_Grass = 0,
+};
+
+constexpr int CHUNK_SIZE = 16;
