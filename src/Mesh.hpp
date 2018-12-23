@@ -11,11 +11,11 @@ struct Vertex {
     std::vector<GLuint> indices;
 
     Vertex& operator += (const Vertex& a) {
-            this->vertices.insert(this->vertices.end(), std::make_move_iterator(a.vertices.begin()), std::make_move_iterator(a.vertices.end()));
-            this->normals.insert(this->normals.end(), std::make_move_iterator(a.normals.begin()), std::make_move_iterator(a.normals.end()));
-            this->colors.insert(this->colors.end(), std::make_move_iterator(a.colors.begin()), std::make_move_iterator(a.colors.end()));
-            this->texCoords.insert(this->texCoords.end(), std::make_move_iterator(a.texCoords.begin()), std::make_move_iterator(a.texCoords.end()));
-            this->indices.insert(this->indices.end(), std::make_move_iterator(a.indices.begin()), std::make_move_iterator(a.indices.end()));
+            this->vertices.insert(this->vertices.end(), a.vertices.begin(), a.vertices.end());
+            this->normals.insert(this->normals.end(), a.normals.begin(), a.normals.end());
+            this->colors.insert(this->colors.end(), a.colors.begin(), a.colors.end());
+            this->texCoords.insert(this->texCoords.end(), a.texCoords.begin(), a.texCoords.end());
+            this->indices.insert(this->indices.end(), a.indices.begin(), a.indices.end());
 
             return *this;
     }

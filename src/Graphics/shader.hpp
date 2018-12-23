@@ -11,6 +11,7 @@ public:
     Shader() = default;
     Shader(const char* vertexPath, const char* fragmentPath);
 
+public:
     void use();
 
     void set(const std::string &name, bool value) const {glUniform1i(glGetUniformLocation(ID, name.c_str()), (int)value);}
