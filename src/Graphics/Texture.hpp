@@ -11,11 +11,11 @@ private:
 
 private:
     void loadImage(const char*);
-    void genTexture();
+    void genTexture(int texInRow);
 
 public:
     Texture() = default;
-    Texture(const char* path);
+    Texture(const char* path, int texInRow);
 
 public:
     void use();
