@@ -1,12 +1,17 @@
 #pragma once
 
+#define GLM_ENABLE_EXPERIMENTAL
+
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <unordered_map>
+#include <queue>
 
 #include <stb_image.h>
 
 #include <glm/glm.hpp>
+#include <glm/gtx/hash.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
@@ -18,7 +23,9 @@
 #define Log(x) std::cout << "LOG: " << x << std::endl
 
 enum BlockType {
-    BlockType_Grass = 0,
+    Air = -1,
+    Grass = 7,
+    Dirt = 9,
 };
 
 constexpr int CHUNK_SIZE = 16;
