@@ -11,13 +11,12 @@ struct Vertex {
     std::vector<GLuint> indices;
 
     Vertex& operator += (const Vertex& a) {
-            this->vertices.insert(this->vertices.end(), a.vertices.begin(), a.vertices.end());
-            this->normals.insert(this->normals.end(), a.normals.begin(), a.normals.end());
-            this->colors.insert(this->colors.end(), a.colors.begin(), a.colors.end());
-            this->texCoords.insert(this->texCoords.end(), a.texCoords.begin(), a.texCoords.end());
-            this->indices.insert(this->indices.end(), a.indices.begin(), a.indices.end());
-
-            return *this;
+        this->vertices.insert(this->vertices.end(), a.vertices.begin(), a.vertices.end());
+        this->normals.insert(this->normals.end(), a.normals.begin(), a.normals.end());
+        this->colors.insert(this->colors.end(), a.colors.begin(), a.colors.end());
+        this->texCoords.insert(this->texCoords.end(), a.texCoords.begin(), a.texCoords.end());
+        this->indices.insert(this->indices.end(), a.indices.begin(), a.indices.end());
+        return *this;
     }
 };
 
