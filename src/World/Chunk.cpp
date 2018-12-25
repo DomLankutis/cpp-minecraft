@@ -21,20 +21,12 @@ Chunk::~Chunk() {
     delete _chunkMesh;
 }
 
-void Chunk::createMesh() {
-    Vertex finalMeshInfo {};
-    for (int x = 0; x < CHUNK_SIZE; x++) {
-    for (int y = 0; y < CHUNK_SIZE; y++) {
-    for (int z = 0; z < CHUNK_SIZE; z++) {
+Block& Chunk::getBlock(int x, int y, int z) {
+    return _blocks[x][y][z];
+}
 
-        if (!_blocks[x][y][z].isActive())
-            continue;
-
-        Vertex cubeInfo = Block::CreateCube(x, y, z, finalMeshInfo.vertices.size() / 3);
-        finalMeshInfo += cubeInfo;
-
-    }}}
-    _chunkMesh = new Mesh{finalMeshInfo};
+void Chunk::createMesh(Vertex& vertexInfo) {
+    _chunkMesh = new Mesh{vertexInfo};
 }
 
 void Chunk::render(GLenum) {

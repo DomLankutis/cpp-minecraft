@@ -9,13 +9,16 @@ private:
     Mesh* _chunkMesh;
 
 public:
+    bool _isModified;
+
+public:
     Chunk();
     ~Chunk();
 
 public:
-    void createMesh();
-    void update(float dt);
+    void createMesh(Vertex& vertexInfo);
     void render(GLenum);
+    Block& getBlock(int x, int y, int z);
 
 };
 
