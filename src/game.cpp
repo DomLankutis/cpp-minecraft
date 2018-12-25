@@ -22,7 +22,7 @@ Game::Game() {
 
     _shader = Shader{"./Graphics/shaders/vShader.glsl", "./Graphics/shaders/fShader.glsl"};
 
-    _textureAtlas = Texture{"./Graphics/textures/textureAtlas.jpg"};
+    _textureAtlas = Texture{"./Graphics/textures/textureAtlas.png", 4};
 
     _worldCamera = Camera{_window.getSize().x, _window.getSize().y};
 
@@ -46,15 +46,18 @@ glm::vec2 Game::getMouseOffset() {
 
 void Game::run() {
 
-    Chunk testChunk {};
-    testChunk.createMesh();
-
     while (_window.isOpen()) {
 
         sf::Event e{};
         while (_window.pollEvent(e)) {
             if (e.type == sf::Event::Closed)
                 _window.close();
+            if (e.type == sf::Event::KeyPressed) {
+                if (e.key.code == sf::Keyboard::I)
+                    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+                if (e.key.code == sf::Keyboard::K)
+                    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+            }
         }
 
         if (_window.hasFocus())
@@ -69,7 +72,8 @@ void Game::run() {
         _shader.use();
         _shader.set("MVP", _worldCamera.getView());
 
-        testChunk.render(GL_TRIANGLES);
+        _chunkManager.update(_dt.asSeconds(), _worldCamera.getPosition());
+
         _window.display();
 
         _fps.update();

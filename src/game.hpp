@@ -5,6 +5,7 @@
 #include "./Graphics/Texture.hpp"
 #include "./World/Block.hpp"
 #include "./World/Chunk.hpp"
+#include "./World/ChunkManager.hpp"
 #include "Camera.hpp"
 #include "Mesh.hpp"
 
@@ -24,6 +25,7 @@ private:
 
     Camera _worldCamera;
 
+    ChunkManager _chunkManager;
 
 private:
     void run();
