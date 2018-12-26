@@ -46,12 +46,22 @@ Block& ChunkManager::getBlock(glm::ivec3 id, glm::vec3 pos) {
     }
 }
 
+bool ChunkManager::chunkSurrounded(glm::ivec3 id) {
+    return ((_worldMap.find(id + glm::ivec3{1, 0, 0}) != _worldMap.end())  &&
+            (_worldMap.find(id + glm::ivec3{-1, 0, 0}) != _worldMap.end()) &&
+            (_worldMap.find(id + glm::ivec3{0, 1, 0}) != _worldMap.end())  &&
+            (_worldMap.find(id + glm::ivec3{0, -1, 0}) != _worldMap.end()) &&
+            (_worldMap.find(id + glm::ivec3{0, 0, 1}) != _worldMap.end())   &&
+            (_worldMap.find(id + glm::ivec3{0, 0, -1}) != _worldMap.end())
+            );
+}
+
 void ChunkManager::loadChunks() {
     while (!_toLoad.empty()) {
         if (_worldMap.find(_toLoad.front()) == _worldMap.end()) {
             _worldMap[_toLoad.front()] = new Chunk{};
             _toBuild.push(_toLoad.front());
-        } else {
+        } else if (!chunkSurrounded(_toLoad.front())){
             _toRender.push(_toLoad.front());
         }
         _toLoad.pop();
@@ -64,7 +74,7 @@ void ChunkManager::buildChunks() {
 
         // Big thanks to roboleary for example of Greedy Mesh.
 
-        int i = 0, j = 0, k = 0, l = 0, h = 0, w = 0, u = 0, v = 0, n = 0, side = 0;
+        int i = 0, j = 0, k = 0, l = 0, w = 0, h = 0, u = 0, v = 0, n = 0, side = 0;
 
         int x[3] = {0, 0, 0};
         int q[3] = {0, 0, 0};
@@ -99,6 +109,7 @@ void ChunkManager::buildChunks() {
                     n = 0;
                     // v - Vertical
                     // u - Horizotal
+                    //TODO check further than the chunk size ?
                     for (x[v] = 0; x[v] < CHUNK_SIZE; ++x[v])
                         for (x[u] = 0; x[u] < CHUNK_SIZE; ++x[u]) {
                             b0 = (x[d] >= 0) ? getBlock(_toBuild.front(), glm::vec3{x[0], x[1], x[2]}) : this->_fakeBlock;
@@ -116,15 +127,15 @@ void ChunkManager::buildChunks() {
                     for (j = 0; j < CHUNK_SIZE; j++)
                         for (i = 0; i < CHUNK_SIZE;) {
                             if (mask[n].getType() != BlockType::Air) {
-                                for (h = 1; i + h < CHUNK_SIZE && mask[n + h].getType() != BlockType::Air &&
-                                            mask[n + h].getType() == mask[n].getType(); h++) {}
+                                for (w = 1; i + w < CHUNK_SIZE && mask[n + w].getType() != BlockType::Air &&
+                                            mask[n + w].getType() == mask[n].getType(); w++) {}
 
                                 bool done = false;
 
-                                for (w = 1; j + w < CHUNK_SIZE; w++) {
-                                    for (k = 0; k < h; k++) {
-                                        if (mask[n + k + w * CHUNK_SIZE].getType() == BlockType::Air ||
-                                            mask[n + k + w * CHUNK_SIZE].getType() != mask[n].getType()) {
+                                for (h = 1; j + h < CHUNK_SIZE; h++) {
+                                    for (k = 0; k < w; k++) {
+                                        if (mask[n + k + h * CHUNK_SIZE].getType() == BlockType::Air ||
+                                            mask[n + k + h * CHUNK_SIZE].getType() != mask[n].getType()) {
                                             done = true;
                                             break;
                                         }
@@ -140,12 +151,12 @@ void ChunkManager::buildChunks() {
                                     du[0] = 0;
                                     du[1] = 0;
                                     du[2] = 0;
-                                    du[u] = h;
+                                    du[u] = w;
 
                                     dv[0] = 0;
                                     dv[1] = 0;
                                     dv[2] = 0;
-                                    dv[v] = w;
+                                    dv[v] = h;
 
                                     GLfloat v0[3] = {(GLfloat) (x[0]), (GLfloat) (x[1]), (GLfloat) (x[2])};
 
@@ -162,14 +173,14 @@ void ChunkManager::buildChunks() {
                                             face(side), _toBuild.front(), vertexInfo.vertices.size() / 3, mask[n].getType());
                                 }
 
-                                for (l = 0; l < w; ++l) {
-                                    for (k = 0; k < h; ++k) {
+                                for (l = 0; l < h; ++l) {
+                                    for (k = 0; k < w; ++k) {
                                         mask[n + k + l * CHUNK_SIZE] = this->_fakeBlock;
                                     }
                                 }
 
-                                i += h;
-                                n += h;
+                                i += w;
+                                n += w;
                             } else {
                                 i++;
                                 n++;
@@ -196,13 +207,13 @@ void ChunkManager::renderChunks() {
 
 void ChunkManager::update(float dt, glm::vec3 cameraPosition) {
     _toLoad.push(glm::ivec3{0, 0, 0});
-    _toLoad.push(glm::ivec3{1, 0, 0});
-    _toLoad.push(glm::ivec3{1, 1, 0});
-    _toLoad.push(glm::ivec3{1, 1, 1});
 
     loadChunks();
-    _worldMap[glm::ivec3{0, 0, 0}]->getBlock(0, 10, 10).setType(BlockType::Dirt);
-    _worldMap[glm::ivec3{0, 0, 0}]->getBlock(0, 10, 11).setType(BlockType::Dirt);
+    _worldMap[glm::ivec3{0, 0, 0}]->getBlock(0, 10, 0).setType(BlockType::Air);
+    _worldMap[glm::ivec3{0, 0, 0}]->getBlock(0, 0, 0).setType(BlockType::Air);
+    _worldMap[glm::ivec3{0, 0, 0}]->getBlock(15, 0, 0).setType(BlockType::Air);
+    _worldMap[glm::ivec3{0, 0, 0}]->getBlock(0, 0, 15).setType(BlockType::Air);
+
     buildChunks();
     renderChunks();
 }

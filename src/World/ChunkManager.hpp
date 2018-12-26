@@ -16,6 +16,7 @@ private:
 private:
     Block& getBlock(glm::vec3 pos);
     Block& getBlock(glm::ivec3 id, glm::vec3 pos);
+    bool chunkSurrounded(glm::ivec3 id);
     void loadChunks();
     void buildChunks();
     void renderChunks();
