@@ -28,25 +28,25 @@ Vertex Block::buildFace(GLfloat v0[3], GLfloat v1[3], GLfloat v2[3], GLfloat v3[
 
    if (side == face::LEFT || side == face::RIGHT)
        texPos = {
-           0 , (GLfloat)height, (GLfloat)type,
-           (GLfloat)width, (GLfloat)height, (GLfloat)type,
-           (GLfloat)width, 0, (GLfloat)type,
-           0, 0, (GLfloat)type,
+           0,               (GLfloat)height,    (GLfloat)type,
+           (GLfloat)width,  (GLfloat)height,    (GLfloat)type,
+           (GLfloat)width,  0,                  (GLfloat)type,
+           0,               0,                  (GLfloat)type,
        };
 
    if (side == face::FRONT || side == face::BACK)
        texPos = {
-           (GLfloat)height, (GLfloat)height, (GLfloat)type,
-           (GLfloat)height, 0, (GLfloat)type,
-           0, 0, (GLfloat)type,
-           0, (GLfloat)height, (GLfloat)type,
+           (GLfloat)height, (GLfloat)height,    (GLfloat)type,
+           (GLfloat)height, 0,                  (GLfloat)type,
+           0,               0,                  (GLfloat)type,
+           0,               (GLfloat)height,    (GLfloat)type,
        };
    if (side == face::BOTTOM || side == face::TOP)
        texPos = {
-           (GLfloat)height, 0, (GLfloat)type,
-           (GLfloat)height, (GLfloat)height, (GLfloat)type,
-           0, (GLfloat)height, (GLfloat)type,
-           0, 0, (GLfloat)type,
+           (GLfloat)height, 0,                  (GLfloat)type,
+           (GLfloat)height, (GLfloat)height,    (GLfloat)type,
+           0,               (GLfloat)height,    (GLfloat)type,
+           0,               0,                  (GLfloat)type,
        };
 
     return Vertex{
