@@ -64,7 +64,7 @@ void ChunkManager::buildChunks() {
 
         // Big thanks to roboleary for example of Greedy Mesh.
 
-        int i = 0, j = 0, k = 0, l = 0, w = 0, h = 0, u = 0, v = 0, n = 0, side = 0;
+        int i = 0, j = 0, k = 0, l = 0, h = 0, w = 0, u = 0, v = 0, n = 0, side = 0;
 
         int x[3] = {0, 0, 0};
         int q[3] = {0, 0, 0};
@@ -116,15 +116,15 @@ void ChunkManager::buildChunks() {
                     for (j = 0; j < CHUNK_SIZE; j++)
                         for (i = 0; i < CHUNK_SIZE;) {
                             if (mask[n].getType() != BlockType::Air) {
-                                for (w = 1; i + w < CHUNK_SIZE && mask[n + w].getType() != BlockType::Air &&
-                                            mask[n + w].getType() == mask[n].getType(); w++) {}
+                                for (h = 1; i + h < CHUNK_SIZE && mask[n + h].getType() != BlockType::Air &&
+                                            mask[n + h].getType() == mask[n].getType(); h++) {}
 
                                 bool done = false;
 
-                                for (h = 1; j + h < CHUNK_SIZE; h++) {
-                                    for (k = 0; k < w; k++) {
-                                        if (mask[n + k + h * CHUNK_SIZE].getType() == BlockType::Air ||
-                                            mask[n + k + h * CHUNK_SIZE].getType() != mask[n].getType()) {
+                                for (w = 1; j + w < CHUNK_SIZE; w++) {
+                                    for (k = 0; k < h; k++) {
+                                        if (mask[n + k + w * CHUNK_SIZE].getType() == BlockType::Air ||
+                                            mask[n + k + w * CHUNK_SIZE].getType() != mask[n].getType()) {
                                             done = true;
                                             break;
                                         }
@@ -140,12 +140,12 @@ void ChunkManager::buildChunks() {
                                     du[0] = 0;
                                     du[1] = 0;
                                     du[2] = 0;
-                                    du[u] = w;
+                                    du[u] = h;
 
                                     dv[0] = 0;
                                     dv[1] = 0;
                                     dv[2] = 0;
-                                    dv[v] = h;
+                                    dv[v] = w;
 
                                     GLfloat v0[3] = {(GLfloat) (x[0]), (GLfloat) (x[1]), (GLfloat) (x[2])};
 
@@ -162,14 +162,14 @@ void ChunkManager::buildChunks() {
                                             face(side), _toBuild.front(), vertexInfo.vertices.size() / 3, mask[n].getType());
                                 }
 
-                                for (l = 0; l < h; ++l) {
-                                    for (k = 0; k < w; ++k) {
+                                for (l = 0; l < w; ++l) {
+                                    for (k = 0; k < h; ++k) {
                                         mask[n + k + l * CHUNK_SIZE] = this->_fakeBlock;
                                     }
                                 }
 
-                                i += w;
-                                n += w;
+                                i += h;
+                                n += h;
                             } else {
                                 i++;
                                 n++;
@@ -201,6 +201,8 @@ void ChunkManager::update(float dt, glm::vec3 cameraPosition) {
     _toLoad.push(glm::ivec3{1, 1, 1});
 
     loadChunks();
+    _worldMap[glm::ivec3{0, 0, 0}]->getBlock(0, 10, 10).setType(BlockType::Dirt);
+    _worldMap[glm::ivec3{0, 0, 0}]->getBlock(0, 10, 11).setType(BlockType::Dirt);
     buildChunks();
     renderChunks();
 }
