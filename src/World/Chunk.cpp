@@ -22,7 +22,7 @@ Chunk::~Chunk() {
 }
 
 Block& Chunk::getBlock(int x, int y, int z) {
-    return _blocks[x][y][z];
+    return _blocks[y][z][x];
 }
 
 void Chunk::createMesh(Vertex& vertexInfo) {
