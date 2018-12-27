@@ -10,9 +10,8 @@ Mesh::Mesh(Vertex vertexInfo) {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);
 
     addVBO(3, vertexInfo.vertices);
-    addVBO(3, vertexInfo.normals);
-    addVBO(3, vertexInfo.colors);
     addVBO(3, vertexInfo.texCoords);
+    addVBO(1, vertexInfo.lightVal);
 
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, _indecieCount * sizeof(unsigned int), vertexInfo.indices.data(), GL_STATIC_DRAW);
 }

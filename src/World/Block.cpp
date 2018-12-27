@@ -20,7 +20,7 @@ void Block::setType(BlockType type) {
     _blockType = type;
 }
 
-Vertex Block::buildFace(GLfloat v0[3], GLfloat v1[3], GLfloat v2[3], GLfloat v3[3], GLfloat width, GLfloat height, face side, glm::ivec3 chunkPos, unsigned int vertexCount, BlockType type) {
+Vertex Block::buildFace(GLfloat v0[3], GLfloat v1[3], GLfloat v2[3], GLfloat v3[3], GLfloat width, GLfloat height, int lightVal, face side, glm::ivec3 chunkPos, unsigned int vertexCount, BlockType type) {
 
     glm::ivec3 offset {chunkPos * CHUNK_SIZE};
 
@@ -55,57 +55,6 @@ Vertex Block::buildFace(GLfloat v0[3], GLfloat v1[3], GLfloat v2[3], GLfloat v3[
        };
    }
 
-    switch (side) {
-        case face::TOP:
-            normal = {
-                0, 1, 0,
-                0, 1, 0,
-                0, 1, 0,
-                0, 1, 0,
-            };
-            break;
-        case face::BOTTOM:
-            normal = {
-                0, -1, 0,
-                0, -1, 0,
-                0, -1, 0,
-                0, -1, 0,
-            };
-            break;
-        case face::LEFT:
-            normal = {
-                -1, 0, 0,
-                -1, 0, 0,
-                -1, 0, 0,
-                -1, 0, 0,
-            };
-            break;
-        case face::RIGHT:
-            normal = {
-                1, 0, 0,
-                1, 0, 0,
-                1, 0, 0,
-                1, 0, 0,
-            };
-            break;
-        case face::FRONT:
-            normal = {
-                0, 0, 1,
-                0, 0, 1,
-                0, 0, 1,
-                0, 0, 1,
-            };
-            break;
-        case face::BACK:
-            normal = {
-                0, 0, -1,
-                0, 0, -1,
-                0, 0, -1,
-                0, 0, -1,
-            };
-            break;
-   }
-
     return Vertex{
             {
                 v0[0] + offset.x, v0[1] + offset.y, v0[2] + offset.z,
@@ -114,16 +63,14 @@ Vertex Block::buildFace(GLfloat v0[3], GLfloat v1[3], GLfloat v2[3], GLfloat v3[
                 v1[0] + offset.x, v1[1] + offset.y, v1[2] + offset.z,
             },
 
-            normal,
+            texPos,
 
             {
-                1, 1, 1,
-                1, 1, 1,
-                1, 1, 1,
-                1, 1, 1,
+                (GLfloat)lightVal,
+                (GLfloat)lightVal,
+                (GLfloat)lightVal,
+                (GLfloat)lightVal
             },
-
-            texPos,
 
             {
                 vertexCount + 0, vertexCount + 1,  vertexCount + 2,
