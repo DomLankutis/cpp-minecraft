@@ -37,6 +37,7 @@ public:
     void move(T value) {_pos += value;}
     void update(glm::vec2, float);
     const glm::mat4 getView() { return _view;}
+    const glm::vec3 getPosition() { return _pos; }
 };
 
 
