@@ -16,6 +16,7 @@ enum face {
 class Block {
 private:
     bool _visable;
+    unsigned char _lightVal;
     BlockType _blockType;
 
 public:
@@ -26,6 +27,12 @@ public:
     void setVisable(bool state);
     BlockType getType();
     void setType(BlockType type);
+
+    inline int getSunlight() { return (_lightVal >> 4) & 0xF; }
+    inline void setSunlight(int val) {_lightVal = (_lightVal & 0xF) | (val << 4); }
+
+    inline int getTorchLight() { return _lightVal & 0xF; }
+    inline void setTorchLight(int val) {_lightVal = (_lightVal & 0xF0) | val; }
 
 public:
     static Vertex buildFace(GLfloat v0[3], GLfloat v1[3], GLfloat v2[3], GLfloat v3[3], GLfloat width, GLfloat height,

@@ -1,6 +1,6 @@
 #include "Block.hpp"
 
-Block::Block() : _visable(true), _blockType(BlockType::Grass) {
+Block::Block() : _visable(true), _blockType(BlockType::Grass), _lightVal(0) {
 
 }
 

@@ -8,7 +8,6 @@ Chunk::Chunk() {
             _blocks[i][j] = new Block[CHUNK_SIZE];
         }
     }
-    memset(_lightMap, 0, sizeof(_lightMap));
 }
 
 Chunk::~Chunk() {
