@@ -8,5 +8,5 @@ uniform sampler2DArray tex;
 
 void main()
 {
-    outColor = vec4(texture(tex, texCoord).rgb * (Light / 15 + 0.1), 1);
+    outColor = vec4(texture(tex, texCoord).rgb * (Light / 15), 1);
 }
