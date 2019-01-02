@@ -10,13 +10,15 @@ private:
 
 public:
     bool _isModified;
+    bool _isEmpty;
 
 public:
     Chunk();
-    Chunk(glm::ivec3 pos);
+    Chunk(glm::ivec3 pos, std::queue<glm::ivec3>& sunLightQueue);
     ~Chunk();
 
 public:
+
     void createMesh(Vertex& vertexInfo);
     void render(GLenum);
     Block& getBlock(int x, int y, int z);
