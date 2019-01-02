@@ -82,7 +82,7 @@ void Game::run() {
         _window.display();
 
         _fps.update();
-        _window.setTitle(std::to_string(_fps.getFPS()));
+        _window.setTitle(std::to_string(_fps.getFPS()) + " " + std::to_string(_worldCamera.getPosition().x) + " " + std::to_string( _worldCamera.getPosition().y) + " " + std::to_string( _worldCamera.getPosition().z ));
         _dt = _deltaClock.restart();
     }
 }
