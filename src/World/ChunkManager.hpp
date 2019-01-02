@@ -15,27 +15,31 @@ private:
     std::queue<glm::ivec3> _toLoad;
     std::queue<glm::ivec3> _toBuild;
     std::queue<glm::ivec3> _toRender;
-    std::queue<glm::ivec3> _toCreateLight;
-    std::queue<lightRemoveNode> _toRemoveLight;
+    std::queue<glm::ivec3> _toCreateTorchLight;
+    std::queue<glm::ivec3> _toCreateSunLight;
+    std::queue<lightRemoveNode> _toRemoveTorchLight;
 
 
     Block _fakeBlock {};
     Chunk _fakeChunk {};
 
 private:
-    glm::ivec3 worldPosToChunkPos(glm::ivec3 pos);
-    glm::ivec3 chunkPosToWorldPos(glm::ivec3 id, glm::ivec3 pos);
-
+    glm::ivec3 worldPosToChunkPos(glm::vec3 pos);
+    glm::ivec3 worldPosToBlockPos(glm::vec3 pos);
     Chunk& getChunk(glm::ivec3 pos);
     Block& getBlock(glm::ivec3 pos);
     Block& getBlock(glm::ivec3 id, glm::vec3 pos);
+    bool chunkHasData(glm::ivec3 id);
     bool chunkSurrounded(glm::ivec3 id);
 
     void addTorchLight(glm::ivec3 sourceWorldPos, int lightLevel);
+    void addSunLight(glm::ivec3 sourceWorldPos, int lightLevel);
     void removeTorchLight(glm::ivec3 sourceWorldPos, int lightLevel);
+    void removeSunLight(glm::ivec3 sourceWorldPos, int lightLevel);
 
     void loadChunks();
     void buildChunks();
+    void calculateSunLight();
     void calculateTorchLight();
     void renderChunks();
 
