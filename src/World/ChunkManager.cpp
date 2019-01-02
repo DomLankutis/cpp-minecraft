@@ -1,7 +1,6 @@
 #include "ChunkManager.hpp"
 
 ChunkManager::ChunkManager() {
-    _fakeBlock.setVisable(false);
     _fakeBlock.setType(BlockType::Air);
 }
 
@@ -69,7 +68,7 @@ bool ChunkManager::chunkSurrounded(glm::ivec3 id) {
 void ChunkManager::loadChunks() {
     while (!_toLoad.empty()) {
         if (_worldMap.find(_toLoad.front()) == _worldMap.end()) {
-            _worldMap[_toLoad.front()] = new Chunk{};
+            _worldMap[_toLoad.front()] = new Chunk{_toLoad.front()};
             _toBuild.push(_toLoad.front());
         } else if (!chunkSurrounded(_toLoad.front())){
             _toRender.push(_toLoad.front());
@@ -126,8 +125,7 @@ void ChunkManager::buildChunks() {
                             b0 = (x[d] >= 0) ? getBlock(_toBuild.front(), glm::vec3{x[0], x[1], x[2]}) : this->_fakeBlock;
                             b1 = (x[d] < CHUNK_SIZE - 1) ? getBlock(_toBuild.front(), glm::vec3{x[0] + q[0], x[1] + q[1], x[2] + q[2]}) : this->_fakeBlock;
 
-                            mask[n++] = (b0.isVisable() && b1.isVisable() && b0.getType() == b1.getType() &&
-                                        b0.getTorchLight() == b1.getTorchLight())
+                            mask[n++] = (b0.getType() == b1.getType() && b0.getTorchLight() == b1.getTorchLight())
                                         ? this->_fakeBlock
                                         : backface ? b1 : b0;
                         }
@@ -157,7 +155,7 @@ void ChunkManager::buildChunks() {
                                         break;
                                 }
 
-                                if (mask[n].isVisable() && mask[n].getType() != BlockType::Air) {
+                                if (mask[n].getType() != BlockType::Air) {
                                     x[u] = i;
                                     x[v] = j;
 
@@ -181,9 +179,6 @@ void ChunkManager::buildChunks() {
 
                                     GLfloat v3[3] = {(GLfloat) (x[0] + dv[0]), (GLfloat) (x[1] + dv[1]),
                                                      (GLfloat) (x[2] + dv[2])};
-
-
-                                    Log(mask[n].getTorchLight());
 
                                     vertexInfo += Block::buildFace(v0, v1, v2, v3, w, h, mask[n].getTorchLight(),
                                             face(side), _toBuild.front(), vertexInfo.vertices.size() / 3, mask[n].getType());
@@ -272,21 +267,12 @@ void ChunkManager::renderChunks() {
 bool first = true;
 
 void ChunkManager::update(float dt, glm::vec3 cameraPosition) {
-    _toLoad.push(glm::ivec3{0, 0, 0});
-
-    loadChunks();
-    if (first) {
-
-        for (int i = 0; i < CHUNK_SIZE; i++)
-        for (int j = 1; j < CHUNK_SIZE; j++)
-        for (int k = 0; k < CHUNK_SIZE; k++) {
-            getBlock(glm::ivec3{i, j, k}).setType(BlockType::Air);
-        }
-        getBlock(glm::ivec3{8, 2, 8}).setTorchLight(15);
-        _toCreateLight.push(glm::ivec3{8, 2, 8});
-
+    for (int y = -1; y < 2; y++)
+    for (int z = 0; z < 4; z++)
+    for (int x = 0; x < 4; x++) {
+        _toLoad.push(glm::ivec3{x, y, z});
     }
-
+    loadChunks();
     buildChunks();
     renderChunks();
 }

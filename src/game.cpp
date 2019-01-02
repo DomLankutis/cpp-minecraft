@@ -1,5 +1,7 @@
 #include "game.hpp"
 
+FastNoise WORLD_NOISE;
+
 Game::Game() {
     sf::ContextSettings contextSettings;
     contextSettings.depthBits = 24;
@@ -28,6 +30,9 @@ Game::Game() {
 
     _lastMousePos = glm::vec2(_window.getSize().x / 2, _window.getSize().y / 2);
 
+    std::srand((unsigned)std::chrono::system_clock::now().time_since_epoch().count());
+    WORLD_NOISE.SetSeed(std::rand());
+    WORLD_NOISE.SetNoiseType(FastNoise::Simplex);
 }
 
 void Game::start() {

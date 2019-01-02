@@ -13,6 +13,7 @@ public:
 
 public:
     Chunk();
+    Chunk(glm::ivec3 pos);
     ~Chunk();
 
 public:

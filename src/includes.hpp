@@ -5,6 +5,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <chrono>
 #include <unordered_map>
 #include <queue>
 
@@ -30,5 +31,8 @@ enum BlockType {
     Grass = 7,
     Dirt = 9,
 };
+
+extern FastNoise WORLD_NOISE;
+constexpr int NOISE_MULTIPLIER = 10;
 
 constexpr int CHUNK_SIZE = 16;
