@@ -15,9 +15,12 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "../lib/FastNoise/FastNoise.h"
+
 #include <glad/glad.h>
 
 #include <SFML/Window.hpp>
+
 
 #define Error(x) std::cerr << "ERROR: " << x << std::endl
 #define Log(x) std::cout << "LOG: " << x << std::endl
