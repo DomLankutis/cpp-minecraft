@@ -318,8 +318,6 @@ void ChunkManager::renderChunks() {
     }
 }
 
-bool first = true;
-
 void ChunkManager::update(float dt, glm::vec3 cameraPosition) {
     for (int y = -1; y < 1; y++)
     for (int z = 0; z < 4; z++)
