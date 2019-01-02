@@ -23,8 +23,6 @@ public:
     Block();
 
 public:
-    const bool isVisable();
-    void setVisable(bool state);
     BlockType getType();
     void setType(BlockType type);
 

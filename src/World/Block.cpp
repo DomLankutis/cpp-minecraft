@@ -1,15 +1,7 @@
 #include "Block.hpp"
 
-Block::Block() : _visable(true), _blockType(BlockType::Grass), _lightVal(0) {
+Block::Block() : _visable(true), _blockType(BlockType::Air), _lightVal(0) {
 
-}
-
-const bool Block::isVisable() {
-    return _visable;
-}
-
-void Block::setVisable(bool state) {
-    _visable = state;
 }
 
 BlockType Block::getType() {
