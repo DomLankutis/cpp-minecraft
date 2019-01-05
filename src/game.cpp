@@ -26,7 +26,7 @@ Game::Game() {
 
     _textureAtlas = Texture{"./Graphics/textures/textureAtlas.png", 4};
 
-    _worldCamera = Camera{_window.getSize().x, _window.getSize().y};
+    _playerCamera = Camera{_window.getSize().x, _window.getSize().y};
 
     _lastMousePos = glm::vec2(_window.getSize().x / 2, _window.getSize().y / 2);
 
@@ -70,19 +70,19 @@ void Game::run() {
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        _worldCamera.update(getMouseOffset(), _dt.asSeconds());
+        _playerCamera.update(getMouseOffset(), _dt.asSeconds());
 
         _textureAtlas.use();
 
         _shader.use();
-        _shader.set("MVP", _worldCamera.getView());
+        _shader.set("MVP", _playerCamera.getView());
 
-        _chunkManager.update(_dt.asSeconds(), _worldCamera.getPosition());
+        _chunkManager.update(_dt.asSeconds(), _playerCamera.getPosition());
 
         _window.display();
 
         _fps.update();
-        _window.setTitle(std::to_string(_fps.getFPS()) + " " + std::to_string(_worldCamera.getPosition().x) + " " + std::to_string( _worldCamera.getPosition().y) + " " + std::to_string( _worldCamera.getPosition().z ));
+        _window.setTitle(std::to_string(_fps.getFPS()) + " " + std::to_string(_playerCamera.getPosition().x) + " " + std::to_string( _playerCamera.getPosition().y) + " " + std::to_string( _playerCamera.getPosition().z ));
         _dt = _deltaClock.restart();
     }
 }

@@ -23,7 +23,7 @@ private:
     glm::vec2 _mousePos;
     glm::vec2 _lastMousePos;
 
-    Camera _worldCamera;
+    Camera _playerCamera;
 
     ChunkManager _chunkManager;
 
