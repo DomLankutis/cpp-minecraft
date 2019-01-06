@@ -364,60 +364,96 @@ void ChunkManager::renderChunks() {
     }
 }
 
-void ChunkManager::castRay(Camera &camera) {
-    int _maxRayLength = 3;
-    glm::vec3 front = camera.getFront();
-    float frontX = std::abs(front.x);
-    float frontY = std::abs(front.y);
-    float frontZ = std::abs(front.z);
-    glm::vec3 ray = camera.getPosition();
-    for (int l = 0; l <= _maxRayLength; l++) {
-        if (l != 0)
-            ray += front;
-        if (getBlock(ray).getType() != BlockType::Air) {
-            _selectedPos = ray;
-            if (frontX > frontY && frontX > frontZ) {
-                _selectedFace = (front.x >= 0) ? Face::RIGHT : Face::LEFT;
-            } else if (frontY > frontX && frontY > frontZ) {
-                _selectedFace = (front.y >= 0) ? Face::TOP : Face::BOTTOM;
-            } else if (frontZ > frontX && frontZ > frontY) {
-                _selectedFace = (front.z >= 0) ? Face::FRONT : Face::BACK;
-            }
-            break;
-        } else {
-            _selectedPos = {};
-        }
+float intbound(float s, float ds) {
+    if (ds < 0) {
+        return intbound(-s, -ds);
+    } else {
+        s = glm::mod(s, 1.0f);
+        return (1-s)/ds;
     }
 }
 
-glm::vec3 ChunkManager::getCurrentFace() {
-    if (_selectedFace == Face::TOP)
-        return {0, -1, 0};
-    else if (_selectedFace == Face::BOTTOM)
-        return {0, 1, 0};
-    else if (_selectedFace == Face::LEFT)
-        return {1, 0, 0};
-    else if (_selectedFace == Face::RIGHT)
-        return {-1, 0, 0};
-    else if (_selectedFace == Face::FRONT)
-        return {0, 0, -1};
-    else if (_selectedFace == Face::BACK)
-        return {0, 0, 1};
-    return {0, 0, 0};
-}
+void ChunkManager::castRay(Camera &camera) {
+
+    int range = 3;
+
+    glm::vec3 camFront = camera.getFront();
+    glm::ivec3 pos {glm::floor(camera.getPosition())};
+
+    glm::ivec3 step {
+        (camFront.x > 0) ? 1 : (camFront.x < 0) ? -1 : 0,
+        (camFront.y > 0) ? 1 : (camFront.y < 0) ? -1 : 0,
+        (camFront.z > 0) ? 1 : (camFront.z < 0) ? -1 : 0
+    };
+
+    if (step.x != 0 && step.y != 0 && step.z != 0) {
+        glm::vec3 tMax{
+                intbound(camera.getPosition().x, camFront.x),
+                intbound(camera.getPosition().y, camFront.y),
+                intbound(camera.getPosition().z, camFront.z),
+        };
+
+        glm::vec3 tDelta{
+                (float)step.x / camFront.x,
+                (float)step.y / camFront.y,
+                (float)step.z / camFront.z,
+        };
+
+        glm::vec3 face{};
+
+        for (;;) {
+            if (getBlock(pos).getType() != BlockType::Air) {
+                _selectedPos = pos;
+                _selectedFace = face;
+                break;
+            }
+            if (tMax.x < tMax.y) {
+                if (tMax.x < tMax.z) {
+                    if (tMax.x > range) break;
+                    pos.x += step.x;
+                    tMax.x += tDelta.x;
+                    face.x = -step.x;
+                    face.y = 0;
+                    face.z = 0;
+                } else {
+                    if (tMax.z > range) break;
+                    pos.z += step.z;
+                    tMax.z += tDelta.z;
+                    face.x = 0;
+                    face.y = 0;
+                    face.z = -step.z;
+                }
+            } else if (tMax.y < tMax.z) {
+                    if (tMax.y > range) break;
+                    pos.y += step.y;
+                    tMax.y += tDelta.y;
+                    face.x = 0;
+                    face.y = -step.y;
+                    face.z = 0;
+                } else {
+                    if (tMax.z > range) break;
+                    pos.z += step.z;
+                    tMax.z += tDelta.z;
+                    face.x = 0;
+                    face.y = 0;
+                    face.z = -step.z;
+                }
+            }
+        }
+    }
 
 void ChunkManager::createBlock(BlockType blockType) {
     if (_selectedPos != glm::vec3{}) {
-        getBlock(_selectedPos + getCurrentFace()).setType(blockType);
-        getChunk(_selectedPos + getCurrentFace())._isModified = true;
+        getBlock(_selectedPos + _selectedFace).setType(blockType);
+        getChunk(_selectedPos + _selectedFace)._isModified = true;
     }
 }
 
 void ChunkManager::destroyBlock() {
     if (_selectedPos != glm::vec3{}) {
         getBlock(_selectedPos).setType(BlockType::Air);
-        _toCreateTorchLight.push(_selectedPos + glm::vec3{0, 1, 0});
-        _toCreateSunLight.push(_selectedPos + glm::vec3{0, 1, 0});
+        _toCreateTorchLight.push(_selectedPos + _selectedFace);
+        _toCreateSunLight.push(_selectedPos + _selectedFace);
         getChunk(_selectedPos)._isModified = true;
     }
 }

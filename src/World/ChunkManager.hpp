@@ -21,7 +21,7 @@ private:
     std::queue<lightRemoveNode> _toRemoveTorchLight;
 
     glm::vec3 _selectedPos {};
-    Face _selectedFace {};
+    glm::vec3 _selectedFace {};
 
     Block _fakeBlock {};
     Chunk _fakeChunk {};
@@ -41,7 +41,6 @@ private:
     void removeSunLight(glm::ivec3 sourceWorldPos, int lightLevel);
 
     void castRay(Camera &camera);
-    glm::vec3 getCurrentFace();
 
     void loadChunks();
     void buildChunks();
