@@ -41,6 +41,7 @@ private:
     void removeSunLight(glm::ivec3 sourceWorldPos, int lightLevel);
 
     void castRay(Camera &camera);
+    glm::vec3 getCurrentFace();
 
     void loadChunks();
     void buildChunks();

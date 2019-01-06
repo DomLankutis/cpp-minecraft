@@ -23,11 +23,11 @@ Chunk::Chunk(glm::ivec3 pos, std::queue<glm::ivec3>& sunLightQueue) {
     for (int x = 0; x < CHUNK_SIZE; x++) {
         int y = (int)(WORLD_NOISE.GetNoise(x + (pos.x * CHUNK_SIZE), z + (pos.z * CHUNK_SIZE)) * NOISE_MULTIPLIER) - (pos.y * CHUNK_SIZE);
         if (y >= 0 && y < CHUNK_SIZE) {
-            for (int py = 0; py <= y; py++) {
-                _blocks[py][z][x].setType(BlockType::Grass);
-                if (py == y) {
-                    sunLightQueue.push(glm::ivec3{x + (pos.x * CHUNK_SIZE), CHUNK_SIZE - 1, z + (pos.z * CHUNK_SIZE)});
-                }
+            for (int py = 0; py < CHUNK_SIZE; py++) {
+                if (py >= y)
+                    _blocks[py][z][x].setSunlight(15);
+                else
+                    _blocks[py][z][x].setType(BlockType::Grass);
             }
         } else if (y >= CHUNK_SIZE) {
             for (int py = 0; py < CHUNK_SIZE; py++) {
