@@ -1,6 +1,5 @@
 #pragma once
 
-#define DEBUG = false;
 #define GLM_ENABLE_EXPERIMENTAL
 
 #include <fstream>
@@ -32,6 +31,9 @@ enum BlockType {
     Grass = 7,
     Dirt = 9,
 };
+
+constexpr int WIDTH = 1920;
+constexpr int HEIGHT = 1080;
 
 extern FastNoise WORLD_NOISE;
 constexpr int NOISE_MULTIPLIER = 10;

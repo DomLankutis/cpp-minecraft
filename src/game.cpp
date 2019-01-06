@@ -9,7 +9,7 @@ Game::Game() {
     contextSettings.minorVersion = 3;
     contextSettings.attributeFlags = sf::ContextSettings::Core;
 
-    _window.create(sf::VideoMode{1920, 1080}, "Minecraft", sf::Style::Titlebar, contextSettings);
+    _window.create(sf::VideoMode{WIDTH, HEIGHT}, "Minecraft", sf::Style::Titlebar, contextSettings);
     _window.setMouseCursorVisible(false);
     _window.setMouseCursorGrabbed(true);
 
