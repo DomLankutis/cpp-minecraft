@@ -1,6 +1,6 @@
 #include "Block.hpp"
 
-Block::Block() : _visable(true), _blockType(BlockType::Air), _lightVal(0) {
+Block::Block() : _visible(true), _blockType(BlockType::Air), _lightVal(0) {
 
 }
 
@@ -12,7 +12,7 @@ void Block::setType(BlockType type) {
     _blockType = type;
 }
 
-Vertex Block::buildFace(GLfloat v0[3], GLfloat v1[3], GLfloat v2[3], GLfloat v3[3], GLfloat width, GLfloat height, int lightVal, face side, glm::ivec3 chunkPos, unsigned int vertexCount, BlockType type) {
+Vertex Block::buildFace(GLfloat v0[3], GLfloat v1[3], GLfloat v2[3], GLfloat v3[3], GLfloat width, GLfloat height, int lightVal, Face side, glm::ivec3 chunkPos, unsigned int vertexCount, BlockType type) {
 
     glm::ivec3 offset {chunkPos * CHUNK_SIZE};
 
@@ -20,7 +20,7 @@ Vertex Block::buildFace(GLfloat v0[3], GLfloat v1[3], GLfloat v2[3], GLfloat v3[
     std::vector<GLfloat> normal {};
 
 
-   if (side == face::LEFT || side == face::RIGHT) {
+   if (side == Face::LEFT || side == Face::RIGHT) {
        texPos = {
            0,               width,             (GLfloat)type,
            height,          width,             (GLfloat)type,
@@ -29,7 +29,7 @@ Vertex Block::buildFace(GLfloat v0[3], GLfloat v1[3], GLfloat v2[3], GLfloat v3[
        };
    }
 
-   if (side == face::FRONT || side == face::BACK) {
+   if (side == Face::FRONT || side == Face::BACK) {
        texPos = {
            width,           height,             (GLfloat)type,
            width,           0,                  (GLfloat)type,
@@ -38,7 +38,7 @@ Vertex Block::buildFace(GLfloat v0[3], GLfloat v1[3], GLfloat v2[3], GLfloat v3[
        };
    }
 
-   if (side == face::BOTTOM || side == face::TOP) {
+   if (side == Face::BOTTOM || side == Face::TOP) {
        texPos = {
            width,           0,                  (GLfloat)type,
            width,           height,             (GLfloat)type,

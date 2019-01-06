@@ -4,7 +4,7 @@
 #include "../includes.hpp"
 #include "../Mesh.hpp"
 
-enum face {
+enum Face {
     FRONT,
     BACK,
     RIGHT,
@@ -15,7 +15,7 @@ enum face {
 
 class Block {
 private:
-    bool _visable;
+    bool _visible;
     unsigned char _lightVal;
     BlockType _blockType;
 
@@ -34,7 +34,7 @@ public:
 
 public:
     static Vertex buildFace(GLfloat v0[3], GLfloat v1[3], GLfloat v2[3], GLfloat v3[3], GLfloat width, GLfloat height,
-            int lightVal, face side, glm::ivec3 chunkPos, unsigned int vertexCount, BlockType type);
+            int lightVal, Face side, glm::ivec3 chunkPos, unsigned int vertexCount, BlockType type);
 };
 
 
