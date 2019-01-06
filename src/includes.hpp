@@ -1,5 +1,6 @@
 #pragma once
 
+#define DEBUG = false;
 #define GLM_ENABLE_EXPERIMENTAL
 
 #include <fstream>
