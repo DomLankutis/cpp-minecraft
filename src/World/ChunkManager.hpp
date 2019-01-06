@@ -3,6 +3,7 @@
 
 #include "../includes.hpp"
 #include "Chunk.hpp"
+#include "../Camera.hpp"
 
 struct lightRemoveNode {
     glm::ivec3 worldPosIndex;
@@ -19,6 +20,8 @@ private:
     std::queue<glm::ivec3> _toCreateSunLight;
     std::queue<lightRemoveNode> _toRemoveTorchLight;
 
+    glm::vec3 _selectedPos {};
+    Face _selectedFace {};
 
     Block _fakeBlock {};
     Chunk _fakeChunk {};
@@ -26,8 +29,8 @@ private:
 private:
     glm::ivec3 worldPosToChunkPos(glm::vec3 pos);
     glm::ivec3 worldPosToBlockPos(glm::vec3 pos);
-    Chunk& getChunk(glm::ivec3 pos);
-    Block& getBlock(glm::ivec3 pos);
+    Chunk& getChunk(glm::vec3 pos);
+    Block& getBlock(glm::vec3 pos);
     Block& getBlock(glm::ivec3 id, glm::vec3 pos);
     bool chunkHasData(glm::ivec3 id);
     bool chunkSurrounded(glm::ivec3 id);
@@ -36,6 +39,8 @@ private:
     void addSunLight(glm::ivec3 sourceWorldPos, int lightLevel);
     void removeTorchLight(glm::ivec3 sourceWorldPos, int lightLevel);
     void removeSunLight(glm::ivec3 sourceWorldPos, int lightLevel);
+
+    void castRay(Camera &camera);
 
     void loadChunks();
     void buildChunks();
@@ -48,7 +53,10 @@ public:
     ~ChunkManager();
 
 public:
-    void update(float dt, glm::vec3 cameraPosition);
+    void createBlock(BlockType blockType);
+    void destroyBlock();
+
+    void update(float dt, Camera& camera);
 
 };
 

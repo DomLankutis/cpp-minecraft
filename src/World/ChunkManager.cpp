@@ -31,25 +31,29 @@ glm::ivec3 ChunkManager::worldPosToBlockPos(glm::vec3 pos) {
     };
 }
 
-Chunk& ChunkManager::getChunk(glm::ivec3 pos) {
+Chunk& ChunkManager::getChunk(glm::vec3 pos) {
     glm::ivec3 chunkId = worldPosToChunkPos(pos);
 
     if (_worldMap.find(chunkId) == _worldMap.end()) {
+#ifndef DEBUG
         Error("[ChunkManager] Chunk " << chunkId.x << " " << chunkId.y << " " << chunkId.z << " not found.");
+#endif
         return _fakeChunk;
     } else {
         return *_worldMap[chunkId];
     }
 }
 
-Block& ChunkManager::getBlock(glm::ivec3 pos) {
+Block& ChunkManager::getBlock(glm::vec3 pos) {
     glm::ivec3 blockPosition = worldPosToBlockPos(pos);
     return getChunk(pos).getBlock(blockPosition.x, blockPosition.y, blockPosition.z);
 }
 
 Block& ChunkManager::getBlock(glm::ivec3 id, glm::vec3 pos) {
     if (_worldMap.find(id) == _worldMap.end()) {
+#ifndef DEBUG
         Error("[ChunkManager] Chunk is not loaded");
+#endif
         return _fakeBlock;
     } else {
         if ( (pos.x >= 0 && CHUNK_SIZE > pos.x) && (pos.y >= 0 && CHUNK_SIZE > pos.y) && (pos.z >= 0 && CHUNK_SIZE > pos.z) )
@@ -123,11 +127,11 @@ void ChunkManager::buildChunks() {
                 q[d] = 1;
 
                 if (d == 0)
-                    side = backface ? face::RIGHT : face::LEFT;
+                    side = backface ? Face::RIGHT : Face::LEFT;
                 else if (d == 1)
-                    side = backface ? face::BOTTOM : face::TOP;
+                    side = backface ? Face::BOTTOM : Face::TOP;
                 else if (d == 2)
-                    side = backface ? face::FRONT : face::BACK;
+                    side = backface ? Face::FRONT : Face::BACK;
 
                 for (x[d] = -1; x[d] < CHUNK_SIZE;) {
 
@@ -138,6 +142,8 @@ void ChunkManager::buildChunks() {
                         for (x[u] = 0; x[u] < CHUNK_SIZE; ++x[u]) {
                             b0 = (x[d] >= 0) ? getBlock(_toBuild.front(), glm::vec3{x[0], x[1], x[2]}) : this->_fakeBlock;
                             b1 = (x[d] < CHUNK_SIZE - 1) ? getBlock(_toBuild.front(), glm::vec3{x[0] + q[0], x[1] + q[1], x[2] + q[2]}) : this->_fakeBlock;
+
+
                             mask[n++] = (b0.getType() == b1.getType())
                                         ? this->_fakeBlock
                                         : backface ? b1 : b0;
@@ -196,7 +202,7 @@ void ChunkManager::buildChunks() {
                                                      (GLfloat) (x[2] + dv[2])};
 
                                     vertexInfo += Block::buildFace(v0, v1, v2, v3, w, h, mask[n].getTorchLight() + mask[n].getSunlight(),
-                                            face(side), _toBuild.front(), vertexInfo.vertices.size() / 3, mask[n].getType());
+                                            Face(side), _toBuild.front(), vertexInfo.vertices.size() / 3, mask[n].getType());
                                 }
 
                                 for (l = 0; l < h; ++l) {
@@ -235,8 +241,7 @@ void ChunkManager::addSunLight(glm::ivec3 sourceWorldPos, int lightLevel) {
     if (getBlock(sourceWorldPos).getTorchLight() + 2 <= lightLevel) {
         if (getBlock(sourceWorldPos).getType() == BlockType::Air)
             _toCreateSunLight.push(sourceWorldPos);
-
-        getBlock(sourceWorldPos).setSunlight(lightLevel);
+        getBlock(sourceWorldPos).setSunlight(lightLevel - 1);
         getChunk(sourceWorldPos)._isModified = true;
     }
 }
@@ -261,17 +266,15 @@ void ChunkManager::calculateSunLight() {
         glm::ivec3 blockWorldPos = _toCreateSunLight.front();
         int lightLevel = getBlock(blockWorldPos).getSunlight();
 
+        addSunLight(blockWorldPos + glm::ivec3{0, -1, 0}, 16);
 
-        if ((int)(WORLD_NOISE.GetNoise(blockWorldPos.x, blockWorldPos.z) * NOISE_MULTIPLIER)  + 1 > blockWorldPos.y) {
-            Log(lightLevel);
-            addSunLight(blockWorldPos + glm::ivec3{1, 0, 0}, lightLevel - 1);
-            addSunLight(blockWorldPos + glm::ivec3{-1, 0, 0}, lightLevel - 1);
-            addSunLight(blockWorldPos + glm::ivec3{0, -1, 0}, lightLevel - 1);
-            addSunLight(blockWorldPos + glm::ivec3{0, 0, 1}, lightLevel - 1);
-            addSunLight(blockWorldPos + glm::ivec3{0, 0, -1}, lightLevel - 1);
-        } else {
-            addSunLight(blockWorldPos + glm::ivec3{0, -1, 0}, 15);
-        }
+//        if ((int)(WORLD_NOISE.GetNoise(blockWorldPos.x, blockWorldPos.z) * NOISE_MULTIPLIER)  + 1 > blockWorldPos.y) {
+//            Log(lightLevel);
+//            addSunLight(blockWorldPos + glm::ivec3{1, 0, 0}, lightLevel);
+//            addSunLight(blockWorldPos + glm::ivec3{-1, 0, 0}, lightLevel);
+//            addSunLight(blockWorldPos + glm::ivec3{0, 0, 1}, lightLevel);
+//            addSunLight(blockWorldPos + glm::ivec3{0, 0, -1}, lightLevel);
+//        }
 
         _toCreateSunLight.pop();
     }
@@ -318,16 +321,71 @@ void ChunkManager::renderChunks() {
     }
 }
 
-void ChunkManager::update(float dt, glm::vec3 cameraPosition) {
+void ChunkManager::castRay(Camera &camera) {
+    int _maxRayLength = 2;
+    glm::vec3 front = camera.getFront();
+    float frontX = std::abs(front.x);
+    float frontY = std::abs(front.y);
+    float frontZ = std::abs(front.z);
+    for (float l = 1; l <= _maxRayLength; l += 0.1f) {
+        glm::vec3 ray = camera.getPosition() + (front * l);
+        if (getBlock(ray).getType() != BlockType::Air) {
+            _selectedPos = ray;
+            if (frontX > frontY && frontX > frontZ) {
+                _selectedFace = (front.x >= 0) ? Face::RIGHT : Face::LEFT;
+            } else
+            if (frontY > frontX && frontY > frontZ) {
+                _selectedFace = (front.y >= 0) ? Face::TOP : Face::BOTTOM;
+            } else
+            if (frontZ > frontX && frontZ > frontY) {
+                _selectedFace = (front.z >= 0) ? Face::FRONT : Face::BACK;
+            }
+        } else {
+            _selectedPos = {};
+        }
+    }
+}
+
+void ChunkManager::createBlock(BlockType blockType) {
+    if (_selectedPos != glm::vec3{}) {
+        glm::vec3 position {};
+        if (_selectedFace == Face::TOP)
+            position = {0, -1, 0};
+        else if (_selectedFace == Face::BOTTOM)
+            position = {0, 1, 0};
+        else if (_selectedFace == Face::LEFT)
+            position = {1, 0, 0};
+        else if (_selectedFace == Face::RIGHT)
+            position = {-1, 0, 0};
+        else if (_selectedFace == Face::FRONT)
+            position = {0, 0, -1};
+        else if (_selectedFace == Face::BACK)
+            position = {0, 0, 1};
+        getBlock(_selectedPos + position).setType(blockType);
+        getChunk(_selectedPos + position)._isModified = true;
+    }
+}
+
+void ChunkManager::destroyBlock() {
+    if (_selectedPos != glm::vec3{}) {
+        getBlock(_selectedPos).setType(BlockType::Air);
+        _toCreateTorchLight.push(_selectedPos);
+        getChunk(_selectedPos)._isModified = true;
+    }
+}
+
+void ChunkManager::update(float dt, Camera &camera) {
     for (int y = -1; y < 1; y++)
     for (int z = 0; z < 4; z++)
     for (int x = 0; x < 4; x++) {
         _toLoad.push(glm::ivec3{x, y, z});
     }
 
+    castRay(camera);
+
     loadChunks();
-    getBlock(glm::ivec3{5, 2, 5}).setTorchLight(15);
-    _toCreateTorchLight.push(glm::ivec3{5, 2, 5});
+    getBlock(glm::ivec3{5, 5, 5}).setTorchLight(15);
+    _toCreateTorchLight.push(glm::ivec3{5, 5, 5});
     buildChunks();
     renderChunks();
 }
