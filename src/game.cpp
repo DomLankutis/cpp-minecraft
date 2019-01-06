@@ -77,8 +77,14 @@ void Game::run() {
         _shader.use();
         _shader.set("MVP", _playerCamera.getView());
 
-        _chunkManager.update(_dt.asSeconds(), _playerCamera.getPosition());
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+            _chunkManager.destroyBlock();
+        }
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
+            _chunkManager.createBlock(BlockType::Dirt);
+        }
 
+        _chunkManager.update(_dt.asSeconds(), _playerCamera);
         _window.display();
 
         _fps.update();
