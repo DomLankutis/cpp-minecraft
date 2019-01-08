@@ -1,6 +1,7 @@
 #include "includes.hpp"
 
 #include "./Utils/Fps.hpp"
+#include "./Utils/Mouse.hpp"
 #include "./Graphics/shader.hpp"
 #include "./Graphics/Texture.hpp"
 #include "./World/Block.hpp"
@@ -13,15 +14,13 @@ class Game {
 private:
     sf::Window _window;
     sf::Clock _deltaClock;
-    sf::Time _dt;
+    float _dt;
 
     FPS _fps;
+    Mouse _mouse;
 
     Texture _textureAtlas;
     Shader _shader;
-
-    glm::vec2 _mousePos;
-    glm::vec2 _lastMousePos;
 
     Camera _playerCamera;
 
@@ -29,8 +28,6 @@ private:
 
 private:
     void run();
-    void updateMouse();
-    glm::vec2 getMouseOffset();
 
 public:
     Game();
