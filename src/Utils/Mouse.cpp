@@ -13,7 +13,7 @@ void Mouse::update(float &dt, sf::Window &window) {
     if ((_limiterTime += dt) >= _limiterMax) {
         _limiterTime = 0;
         _canClick = true;
-    } else { _canClick = false; }
+    }
 
     sf::Vector2i sm = sf::Mouse::getPosition(window);
     _mousePos = glm::vec2(sm.x, sm.y);
@@ -21,5 +21,7 @@ void Mouse::update(float &dt, sf::Window &window) {
 }
 
 const bool Mouse::isButtonPressed(sf::Mouse::Button button) {
-    return (sf::Mouse::isButtonPressed(button) && _canClick);
+    bool eval = (sf::Mouse::isButtonPressed(button) && _canClick);
+    _canClick = eval ? false : _canClick;
+    return eval;
 }
