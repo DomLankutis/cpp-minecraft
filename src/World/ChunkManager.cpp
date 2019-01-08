@@ -453,8 +453,17 @@ void ChunkManager::createBlock(BlockType blockType) {
 void ChunkManager::destroyBlock() {
     if (_selectedPos != glm::vec3{}) {
         getBlock(_selectedPos).setType(BlockType::Air);
+        getBlock(_selectedPos).setTorchLight(0);
+        getBlock(_selectedPos).setSunlight(0);
         _toCreateTorchLight.push(_selectedPos + _selectedFace);
         _toCreateSunLight.push(_selectedPos + _selectedFace);
+        if (_selectedFace != glm::vec3{0, 1, 0}) {
+            _toCreateTorchLight.push(_selectedPos + glm::vec3{0, 1, 0});
+            _toCreateSunLight.push(_selectedPos + glm::vec3{0, 1, 0});
+        } else if (_selectedFace != glm::vec3{0, -1, 0}) {
+            _toCreateTorchLight.push(_selectedPos + glm::vec3{0, -1, 0});
+            _toCreateSunLight.push(_selectedPos + glm::vec3{0, -1, 0});
+        }
         getChunk(_selectedPos)._isModified = true;
     }
 }
