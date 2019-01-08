@@ -58,7 +58,7 @@ void Game::run() {
         }
 
         if (_window.hasFocus())
-            _mouse.update(_window);
+            _mouse.update(_dt, _window);
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -69,10 +69,10 @@ void Game::run() {
         _shader.use();
         _shader.set("MVP", _playerCamera.getView());
 
-        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+        if (_mouse.isButtonPressed(sf::Mouse::Left)) {
             _chunkManager.destroyBlock();
         }
-        if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
+        if (_mouse.isButtonPressed(sf::Mouse::Right)) {
             _chunkManager.createBlock(BlockType::Dirt);
         }
 
