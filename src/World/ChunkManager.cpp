@@ -280,7 +280,7 @@ void ChunkManager::addTorchLight(glm::ivec3 sourceWorldPos, int lightLevel) {
 }
 
 void ChunkManager::addSunLight(glm::ivec3 sourceWorldPos, int lightLevel) {
-    if (getBlock(sourceWorldPos).getTorchLight() + 2 <= lightLevel) {
+    if (getBlock(sourceWorldPos).getSunlight() + 2 <= lightLevel) {
         if (getBlock(sourceWorldPos).getType() == BlockType::Air) {
             _toCreateSunLight.push(sourceWorldPos);
             getBlock(sourceWorldPos).setSunlight(lightLevel - 1);
@@ -313,11 +313,12 @@ void ChunkManager::calculateSunLight() {
             addSunLight(blockWorldPos + glm::ivec3{0, -1, 0}, 16);
         else
             addSunLight(blockWorldPos + glm::ivec3{0, -1, 0}, lightLevel);
-//        addSunLight(blockWorldPos + glm::ivec3{1, 0, 0}, lightLevel);
-//        addSunLight(blockWorldPos + glm::ivec3{-1, 0, 0}, lightLevel);
-//            addSunLight(blockWorldPos + glm::ivec3{0, 1, 0}, lightLevel);
-//        addSunLight(blockWorldPos + glm::ivec3{0, 0, 1}, lightLevel);
-//        addSunLight(blockWorldPos + glm::ivec3{0, 0, -1}, lightLevel);
+
+        addSunLight(blockWorldPos + glm::ivec3{1, 0, 0}, lightLevel);
+        addSunLight(blockWorldPos + glm::ivec3{-1, 0, 0}, lightLevel);
+        addSunLight(blockWorldPos + glm::ivec3{0, 1, 0}, lightLevel);
+        addSunLight(blockWorldPos + glm::ivec3{0, 0, 1}, lightLevel);
+        addSunLight(blockWorldPos + glm::ivec3{0, 0, -1}, lightLevel);
 
         _toCreateSunLight.pop();
     }
