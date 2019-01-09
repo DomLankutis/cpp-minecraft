@@ -19,6 +19,7 @@ private:
     std::queue<glm::ivec3> _toCreateTorchLight;
     std::queue<glm::ivec3> _toCreateSunLight;
     std::queue<lightRemoveNode> _toRemoveTorchLight;
+    std::queue<lightRemoveNode> _toRemoveSunLight;
 
     glm::vec3 _selectedPos {};
     glm::vec3 _selectedFace {};
@@ -32,6 +33,7 @@ private:
     Chunk& getChunk(glm::vec3 pos);
     Block& getBlock(glm::vec3 pos);
     Block& getBlock(glm::ivec3 id, glm::vec3 pos);
+    Vertex greedyMesh(glm::ivec3 chunkPos);
     bool chunkHasData(glm::ivec3 id);
     bool chunkSurrounded(glm::ivec3 id);
 
