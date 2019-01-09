@@ -4,6 +4,7 @@
 
 #include <fstream>
 #include <sstream>
+#include <future>
 #include <iostream>
 #include <chrono>
 #include <unordered_map>
